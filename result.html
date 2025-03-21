@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberShield Results</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: url('https://source.unsplash.com/1600x900/?technology,security') no-repeat center center fixed;
+            background-size: cover;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Poppins', sans-serif;
+        }
+        .result-container {
+            background: white;
+            width: 90%;
+            max-width: 600px;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            overflow-y: auto;
+            max-height: 90vh;
+        }
+        h2 {
+            color: #007bff;
+        }
+        .advice {
+            text-align: left;
+            margin-top: 15px;
+        }
+        .btn {
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="result-container">
+        <h2>CyberShield Quiz Results</h2>
+        <p id="result-message"></p>
+        <div class="advice" id="advice-section"></div>
+        <button class="btn btn-primary" onclick="goHome()">Retake Quiz</button>
+    </div>
+
+    <script>
+        const answers = JSON.parse(localStorage.getItem("cyberAnswers")) || {};
+        let score = 0;
+
+        Object.values(answers).forEach(answer => {
+            if (['Yes', 'P@ssw0rd!123', 'Scan it with antivirus software first', 'Use a VPN', 'Every month', 'Report it', 'Using a password manager', 'Check HTTPS', 'Strong passwords', 'Credit card with 2FA'].includes(answer)) {
+                score++;
+            }
+        });
+
+        let resultMessage = "";
+        let advice = "";
+        
+        if (score >= 12) {
+            resultMessage = "Your cyber habits are EXCELLENT! You are well-protected online.";
+            advice = "Keep using strong passwords, enabling two-factor authentication, and staying cautious of phishing attempts.";
+        } else if (score >= 9) {
+            resultMessage = "Your cyber habits are GOOD. You have a solid foundation but there is room for improvement.";
+            advice = "Consider changing passwords regularly, using a VPN in public networks, and being extra cautious with suspicious links.";
+        } else if (score >= 6) {
+            resultMessage = "Your cyber habits are AVERAGE. You need to be more cautious to stay secure online.";
+            advice = "Start using a password manager, avoid reusing passwords, and always verify the security of websites before entering sensitive data.";
+        } else if (score >= 3) {
+            resultMessage = "Your cyber habits are BAD. You are at risk of cyber threats.";
+            advice = "Enable two-factor authentication, never use public Wi-Fi for sensitive transactions, and always scan files before opening them.";
+        } else {
+            resultMessage = "Your cyber habits are POOR. You are highly vulnerable to cyber attacks.";
+            advice = "Take cybersecurity seriously! Use strong passwords, enable 2FA, avoid public Wi-Fi, and be extra cautious about emails and links.";
+        }
+        
+        document.getElementById("result-message").innerText = resultMessage;
+        document.getElementById("advice-section").innerText = advice;
+
+        function goHome() {
+            window.location.href = "index.html";
+        }
+    </script>
+</body>
+</html>

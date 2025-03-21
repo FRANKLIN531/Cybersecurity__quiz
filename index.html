@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberShield Quiz</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: url('https://source.unsplash.com/1600x900/?technology,security') no-repeat center center fixed;
+            background-size: cover;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Poppins', sans-serif;
+        }
+        .quiz-container {
+            background: white;
+            width: 90%;
+            max-width: 600px;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            overflow-y: auto;
+            max-height: 90vh;
+        }
+        .question {
+            font-weight: 600;
+            text-align: left;
+        }
+        .answer-btn {
+            width: 100%;
+            margin: 5px 0;
+            font-size: 16px;
+            padding: 8px;
+        }
+        .selected {
+            background-color: #007bff !important;
+            color: white !important;
+        }
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h2 class="text-primary">CyberShield Quiz</h2>
+        <form id="quizForm">
+            <div id="question-section">
+                <!-- Questions will be inserted dynamically -->
+            </div>
+            <div class="nav-buttons">
+                <button type="button" class="btn btn-secondary" id="prevBtn" onclick="prevPage()" disabled>Previous</button>
+                <button type="button" class="btn btn-primary" id="nextBtn" onclick="nextPage()">Next</button>
+                <button type="button" class="btn btn-success" id="submitBtn" onclick="submitQuiz()" style="display:none;">Submit</button>
+            </div>
+        </form>
+    </div>
+    
+    <script>
+        const questions = [
+            { q: "Do you use two-factor authentication?", options: ["Yes", "No"] },
+            { q: "Which of these passwords is the strongest?", options: ["123456", "P@ssw0rd!123", "qwerty"] },
+            { q: "Ama received a file from an unknown sender. What should she do?", options: ["Open it immediately", "Scan it with antivirus software first", "Forward it to her friends"] },
+            { q: "Do you use unique passwords for different accounts?", options: ["Yes", "No"] },
+            { q: "What is the best way to stay safe on public Wi-Fi?", options: ["Use a VPN", "Enter your banking details", "Ignore security warnings"] },
+            { q: "How often do you update your passwords?", options: ["Every month", "Once a year", "Never"] },
+            { q: "What should you do if you receive a suspicious email?", options: ["Report it", "Open and reply", "Ignore it"] },
+            { q: "Which is a safer way to store passwords?", options: ["Writing them down", "Using a password manager", "Reusing easy passwords"] },
+            { q: "How do you recognize phishing links?", options: ["Check the URL", "Click to find out", "Trust all links"] },
+            { q: "Which of these is a strong security measure?", options: ["Enabling multi-factor authentication", "Using the same password everywhere", "Sharing passwords with friends"] },
+            { q: "How often do you back up important data?", options: ["Weekly", "Monthly", "Never"] },
+            { q: "What is the best way to protect your social media accounts?", options: ["Strong passwords", "Leaving them public", "Sharing login details"] },
+            { q: "Which is a secure method of online payment?", options: ["Credit card with 2FA", "Public Wi-Fi purchases", "Saving payment details everywhere"] },
+            { q: "How do you verify a website's security?", options: ["Check HTTPS", "Ignore it", "Enter details to check"] },
+            { q: "Do you enable automatic software updates?", options: ["Yes", "No"] }
+        ];
+
+        let currentPage = 0;
+        function renderQuestions() {
+            let start = currentPage * 5;
+            let end = start + 5;
+            let questionHTML = "";
+            for (let i = start; i < end && i < questions.length; i++) {
+                questionHTML += `<div class='mb-3'>
+                    <p class='question'>${i + 1}. ${questions[i].q}</p>`;
+                questions[i].options.forEach(option => {
+                    questionHTML += `<button type='button' class='btn btn-outline-primary answer-btn' data-q='${i}' onclick='selectAnswer(${i}, this)'>${option}</button>`;
+                });
+                questionHTML += `</div>`;
+            }
+            document.getElementById("question-section").innerHTML = questionHTML;
+            document.getElementById("prevBtn").disabled = currentPage === 0;
+            document.getElementById("nextBtn").style.display = currentPage === 2 ? "none" : "inline-block";
+            document.getElementById("submitBtn").style.display = currentPage === 2 ? "inline-block" : "none";
+        }
+
+        function nextPage() {
+            if (validatePage()) {
+                currentPage++;
+                renderQuestions();
+            }
+        }
+
+        function prevPage() {
+            currentPage--;
+            renderQuestions();
+        }
+
+        let answers = {};
+        function selectAnswer(questionIndex, btn) {
+            answers[questionIndex] = btn.innerText;
+            document.querySelectorAll(`[data-q='${questionIndex}']`).forEach(button => button.classList.remove("selected"));
+            btn.classList.add("selected");
+        }
+
+        function validatePage() {
+            let start = currentPage * 5;
+            let end = start + 5;
+            for (let i = start; i < end && i < questions.length; i++) {
+                if (!answers[i]) {
+                    alert("Please answer all questions before proceeding.");
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function submitQuiz() {
+            if (validatePage()) {
+                localStorage.setItem("cyberAnswers", JSON.stringify(answers));
+                window.location.href = "result.html";
+            }
+        }
+
+        renderQuestions();
+    </script>
+</body>
+</html>
